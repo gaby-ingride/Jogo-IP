@@ -179,7 +179,6 @@ void salvar_ranking(const char *arquivo, const char *nome, int pontuacao) {
 void mostrar_ranking(const char *arquivo) {
     FILE *arquivo_ranking;
     
-    // Estrutura para armazenar registros do ranking
     typedef struct {
         char nome[MAXIMO_NOME];
         int pontos;
@@ -187,6 +186,7 @@ void mostrar_ranking(const char *arquivo) {
 
     RegistroRanking lista_ranking[MAXIMO_RANKING];
     int contador = 0;
+    int i, j; // <-- declare fora dos for
 
     arquivo_ranking = fopen(arquivo, "r");
     if (!arquivo_ranking) {
@@ -194,7 +194,6 @@ void mostrar_ranking(const char *arquivo) {
         return;
     }
 
-    // Lê todos os registros do arquivo
     while (fscanf(arquivo_ranking, "%[^;];%d\n", 
            lista_ranking[contador].nome, 
            &lista_ranking[contador].pontos) == 2 && 
@@ -204,8 +203,8 @@ void mostrar_ranking(const char *arquivo) {
     fclose(arquivo_ranking);
 
     // Ordena os registros por pontuação (decrescente)
-    for (int i = 0; i < contador - 1; i++) {
-        for (int j = i + 1; j < contador; j++) {
+    for (i = 0; i < contador - 1; i++) {
+        for (j = i + 1; j < contador; j++) {
             if (lista_ranking[j].pontos > lista_ranking[i].pontos) {
                 RegistroRanking temporario = lista_ranking[i];
                 lista_ranking[i] = lista_ranking[j];
@@ -216,7 +215,7 @@ void mostrar_ranking(const char *arquivo) {
 
     // Exibe o top 5
     printf("\n===== TOP 5 RECORDES =====\n");
-    for (int i = 0; i < contador && i < 5; i++) {
+    for (i = 0; i < contador && i < 5; i++) {
         printf("%d. %s - %d pontos\n", i + 1, 
                lista_ranking[i].nome, 
                lista_ranking[i].pontos);
@@ -491,24 +490,20 @@ int main() {
     int opcao;
     char buffer[10];
 
-    // Inicializações importantes
-    srand((unsigned int)time(NULL)); // Semente para números aleatórios
-    
-    // Configurações de localidade e codificação
+    srand((unsigned int)time(NULL));
     setlocale(LC_ALL, "Portuguese");
-    SetConsoleOutputCP(65001); // UTF-8
+    SetConsoleOutputCP(65001);
     SetConsoleCP(65001);
 
-    // Loop do menu principal
     do {
         system("cls");
         printf("=== PALAVRAS ENTRE MUNDOS ===\n");
         printf("\nMenu Principal:\n");
         printf("1. Carta para o Astronauta\n");
-        printf("2. Nivel Facil (%d pts)\n", PONTOS_FACIL);
-        printf("3. Nivel Medio (%d pts)\n", PONTOS_MEDIO);
-        printf("4. Nivel Dificil (%d pts)\n", PONTOS_DIFICIL);
-        printf("5. Modo TryHard (Traducao - %d pts)\n", PONTOS_TRYHARD);
+        printf("2. Nivel Facil (%d pts)\n", PONTUACAO_FACIL);
+        printf("3. Nivel Medio (%d pts)\n", PONTUACAO_MEDIO);
+        printf("4. Nivel Dificil (%d pts)\n", PONTUACAO_DIFICIL);
+        printf("5. Modo TryHard (Traducao - %d pts)\n", PONTUACAO_TRYHARD);
         printf("6. Visualizar Ranking\n");
         printf("7. Sair\n");
         printf("Escolha: ");
@@ -519,11 +514,11 @@ int main() {
         if (opcao == 1) {
             mostrar_historia();
         } else if (opcao == 2) {
-            jogar_modo_normal(1);  // Fácil
+            jogar_modo_normal(1);
         } else if (opcao == 3) {
-            jogar_modo_normal(2);  // Médio
+            jogar_modo_normal(2);
         } else if (opcao == 4) {
-            jogar_modo_normal(3);  // Difícil
+            jogar_modo_normal(3);
         } else if (opcao == 5) {
             jogar_modo_tryhard();
         } else if (opcao == 6) {
@@ -534,8 +529,7 @@ int main() {
             printf("Opção inválida! Tente novamente.\n");
             Sleep(1000);
         }
-        
-	} while (opcao != 7);
+    } while (opcao != 7);
 
     return 0;
 }
